@@ -4,7 +4,7 @@
 Repository program XXX ini dibuat untuk memenuhi **Tugas Besar Mata Kuliah IF2211 Strategi Algoritma** yang ke-3 pada Semester II Tahun Akademik 2021/2022. 
 
 ## Table of Contents
-- [Tubes 2 BONEK](#tubes-2-doifinders)
+- [Tubes 3 BONEK](#tubes-2-doifinders)
   - [Table of Contents](#table-of-contents)
   - [XXX Algorithm](#dfs-and-bfs-algorithm)
   - [Requirement and Installation](#requirement-and-installation)
