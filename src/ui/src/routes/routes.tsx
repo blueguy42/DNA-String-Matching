@@ -8,13 +8,6 @@ export type route = {
   component?: () => JSX.Element;
 };
 
-type navroutes = {
-  content: route;
-  children_routes?: route[];
-  isDropdown?: boolean;
-  parentPath?: string;
-};
-
 export const toRoute = (label: string, path: string, component?: (props?: any) => JSX.Element): route => ({
   label,
   path,
