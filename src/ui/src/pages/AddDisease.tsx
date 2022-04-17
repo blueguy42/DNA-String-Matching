@@ -1,6 +1,8 @@
 import { useState } from "react";
 
 const AddDisease = () => {
+    document.title = "Add Disease | BONEK DNA Tester";
+
     const [counter, setCounter] = useState(0);
     const [success, setSuccess] = useState(false);
 

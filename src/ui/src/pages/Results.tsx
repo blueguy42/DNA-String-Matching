@@ -20,6 +20,8 @@ const QueryResult: FC<Props> = ({children}) => {
 };
 
 const Results = () => {
+    document.title = "Results | BONEK DNA Tester";
+
     const [counter, setCounter] = useState(0);
     const [success, setSuccess] = useState(false);
     
@@ -54,7 +56,7 @@ const Results = () => {
                 e.preventDefault();
                 setCounter(counter+1);
                 changeSuccess((document.getElementById("searchquery") as HTMLInputElement).value);
-                setChats([...chats, <QueryResult>{counter + ". " + (document.getElementById("searchquery") as HTMLInputElement).value}</QueryResult>]);
+                setChats([...chats, <QueryResult>{counter+1 + ". " + (document.getElementById("searchquery") as HTMLInputElement).value}</QueryResult>]);
 
                 (document.getElementById("searchquery") as HTMLInputElement).value = "";
                 }} >
