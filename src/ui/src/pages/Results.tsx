@@ -50,7 +50,7 @@ const Results = () => {
     return (
         <>
         <div className="h=[100vh] overflow-auto">
-        <div className="flex flex-col rounded-2xl bg-gray-800 shadow-md mx-64 my-24">
+        <div className="flex flex-col rounded-2xl bg-gray-800 shadow-md mx-64 my-10">
             <form onSubmit={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
