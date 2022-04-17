@@ -7,9 +7,9 @@ import Navbar from './components/Navbar';
 
 function App(): JSX.Element {
   return (
-    <div className="App">
+    <div className="App min-h-screen bg-gray-900">
       <Navbar />
-      <div className="app-content min-h-screen bg-gray-900 text-white">
+      <div className="app-content text-white">
       <Switch>
           { AllRoutes.map(({ label, path, component: Component}, props) => (
             <Route
