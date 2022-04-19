@@ -1,8 +1,8 @@
 package main
 
-import (
-	"fmt"
-)
+// import (
+// 	"fmt"
+// )
 
 func kmpBorderFunc(pola string) []int {
 	// Border function dari KMP merupakan array yang berisi panjang prefix maksimal yang sama dengan sufix untuk tiap k nya
