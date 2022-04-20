@@ -128,6 +128,64 @@ func boyermoore(dna string, pola string) bool{
 	return found;
 }
 
+func lcs(dna string, pola string) int{
+	// MENDAPATKAN PANJANG DARI LONGEST COMMON SUBSEQUENCE DENGAN APPROACH DYNAMIC PROGRAMMING.
+
+	// KAMUS
+	runePola := []rune(pola) // Konversi string menjadi array of char agar bisa mengakses tiap char
+	runeDNA := []rune(dna)
+	panjangPola := len(runePola)
+	panjangDNA := len(runeDNA)
+	MatriksLCS:= make([][]int, panjangDNA+1)       // Membuat matriks yang berisi panjangnya dari subsequence yang sudah diperiksa
+	for i:=0; i <= panjangDNA; i++ {
+		MatriksLCS[i] = make([]int, panjangPola+1)
+	}  
+
+	// ALGORITMA
+	for i:=0; i <= panjangDNA; i++{ // MEMBUAT BASIS, KOLOM PERTAMA DAN BARIS PERTAMA DIISI 0 KARENA BAGIAN NO SUBSEQUENCE
+		MatriksLCS[i][0] = 0
+	}
+	for i:=0; i <= panjangPola; i++{ 
+		MatriksLCS[0][i] = 0
+	}
+
+	for i:=1; i <= panjangDNA; i++{ // BAGIAN ITERASI UNTUK MENGISI MATRIKSNYA, ELEMENNYA ADALAH PANJANG DARI SUBSEQUENCE PADA INDEKS TERSEBUT
+		for j:=1; j <= panjangPola; j++{
+			if runeDNA[i-1] == runePola[j-1] { // Apabila hurufnya sama, maka tambahkan satu dari sebelumnya
+				MatriksLCS[i][j] = 1 + MatriksLCS[i-1][j-1]
+			} else {// Kasus hurufnya tidak sama, trackback  value terbesar dari sebelumnya (trackback cell kiri atau atas)
+				if MatriksLCS[i-1][j] > MatriksLCS[i][j-1]{
+					MatriksLCS[i][j] = MatriksLCS[i-1][j]
+				} else {
+					MatriksLCS[i][j] = MatriksLCS[i][j-1]
+				}
+			}
+		}
+	}
+
+	return MatriksLCS[panjangDNA][panjangPola]
+}
+
+func GestaltPatternSimilarity(lcs int, dna string, pola string) int{
+	// Mengembalikan persentase kemiripan LCS dengan formula Gestalt
+
+	runePola := []rune(pola) // Konversi string menjadi array of char agar bisa mengakses tiap char
+	runeDNA := []rune(dna)
+	panjangPola := len(runePola)
+	panjangDNA := len(runeDNA)
+
+	return 2*lcs*100/(panjangDNA + panjangPola) // kali 100 agar dalam persen terlebih dahulu
+}
+
+func lcsSimilarityPercentage(dna string, pola string) int{
+	// Menggabungkan langsung lcs dengan gestalt agar mendapatkan persentase
+
+	panjangLCS := lcs(dna,pola)
+	persentase := GestaltPatternSimilarity(panjangLCS, dna, pola)
+
+	return persentase
+}
+
 // func main() {
 	// TES SINTAKS DASAR
 	// kalimat := "IPnya kiky adalah "
@@ -154,5 +212,13 @@ func boyermoore(dna string, pola string) bool{
 	// fmt.Print(boyermoore("abcabsda","ashaoioahsoithhtash"))
 	// fmt.Print(boyermoore("agctcgatcgatcgatc", "gatc"))
 	// fmt.Print(boyermoore("abcdefgh", "fgh"))
+
+	// TES LCS (panjangnya saja)
+	// fmt.Print(lcsSimilarityPercentage("AGCAT","GAC"))
+
+	// TES PERSENTASE KEMIRIPAN LCS
+	// fmt.Println(lcsSimilarityPercentage("Pennsylvania","Pencilvaneya"))
+	// fmt.Println(lcsSimilarityPercentage("AGACAGAC","AGCAG"))
+	// fmt.Println(lcsSimilarityPercentage("persis","persis"))
 
 // }
