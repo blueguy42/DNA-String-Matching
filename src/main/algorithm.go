@@ -130,6 +130,9 @@ func boyermoore(dna string, pola string) bool{
 
 func lcs(dna string, pola string) int{
 	// MENDAPATKAN PANJANG DARI LONGEST COMMON SUBSEQUENCE DENGAN APPROACH DYNAMIC PROGRAMMING.
+	// Menggunakan algoritma lcs sebab kemiripan dna dapat diperiksa dari subsequence karena dapat berasal dari leluhur yang sama, namun
+	// dapat berbeda atau tidak urut karena mutasi berupa insersi atau delete basa nitrogen. Dalam dunia kerja bio-informatika,
+	// metode lcs memang sering digunakan untuk menentukan kemiripan untaian dna. 
 
 	// KAMUS
 	runePola := []rune(pola) // Konversi string menjadi array of char agar bisa mengakses tiap char
@@ -186,6 +189,33 @@ func lcsSimilarityPercentage(dna string, pola string) int{
 	return persentase
 }
 
+func lcsSimilarityREVISIFAQ(dna string, pola string) int{
+	// Menggabungkan langsung lcs dengan gestalt agar mendapatkan persentase.
+	// Mencari untuk substring yang memiliki tingkat kemiripan terbesar.
+	
+	// KAMUS
+	panjangLCS := 0
+	persentase := 0
+	tempPersentase := 0
+	runePola := []rune(pola) // Konversi string menjadi array of char agar bisa mengakses tiap char
+	runeDNA := []rune(dna)
+	panjangPola := len(runePola)
+	panjangDNA := len(runeDNA)
+
+	// ALGORITMA
+	if panjangDNA >= panjangPola { // Melakukan lcs untuk tiap substring
+		for i:=0; i <= panjangDNA - panjangPola; i++ {
+			panjangLCS = lcs(dna[i:i+panjangPola], pola)
+			tempPersentase = GestaltPatternSimilarity(panjangLCS, dna[i:i+panjangPola], pola)
+			if tempPersentase > persentase {
+				persentase = tempPersentase
+				fmt.Println(dna[i:i+panjangPola])
+			}
+		}
+	}
+	return persentase
+}
+
 // func main() {
 	// TES SINTAKS DASAR
 	// kalimat := "IPnya kiky adalah "
@@ -221,4 +251,8 @@ func lcsSimilarityPercentage(dna string, pola string) int{
 	// fmt.Println(lcsSimilarityPercentage("AGACAGAC","AGCAG"))
 	// fmt.Println(lcsSimilarityPercentage("persis","persis"))
 
+	// TES PERSENTASE KEMIRIPAN LCS YANG SESUAI FAQ
+	// fmt.Println(lcsSimilarityREVISIFAQ("Pennsylvania","Pencilvaneya"))
+	// fmt.Println(lcsSimilarityREVISIFAQ("AGACAGAC","AGCAG")) // ini mirip AGACA sama AGCAG karena LCS nya yakni AGCA jadi 80% 
+	// fmt.Println(lcsSimilarityREVISIFAQ("persis","persis"))
 // }
