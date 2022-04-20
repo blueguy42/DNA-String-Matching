@@ -64,7 +64,9 @@ func kmp(dna string, pola string) bool{
 	return found
 }
 
-func booyermoreLastIndex(dna string, pola string) map[string]int {
+func boyermooreLastIndex(dna string, pola string) map[string]int {
+	// Mengembalikan sebuah map untuk tiap huruf pada pola, pada indeks terakhir keberapakah mereka ditemukan. Untuk huruf pada dna yang tidak ada pada pola dicatat -1
+
 	// KAMUS
 	last := make(map[string]int) // Menggunakan map untuk menunjukkan lokasi huruf terakhirnya
 	runePola := []rune(pola) // Konversi string menjadi array of char agar bisa mengakses tiap char
@@ -84,14 +86,49 @@ func booyermoreLastIndex(dna string, pola string) map[string]int {
 	return last
 }
 
-func booyermore(dna string, pola string) bool{
+func boyermoore(dna string, pola string) bool{
+	// Memeriksa apakah dalam suatu dna terdapat pola atau tidak menggunakan boyermoore, return true untuk iya dan false untuk tidak
+
 	// KAMUS
+	runePola := []rune(pola) // Konversi string menjadi array of char agar bisa mengakses tiap char
+	runeDNA := []rune(dna)
+	panjangPola := len(runePola)
+	panjangDNA := len(runeDNA)
+	i := panjangPola -1 // Menunjuk kepada huruf pada dna yang sedang diperiksa
+	j := panjangPola -1 // menunjuk kepada huruf pada pola yang sedang diperiksa
+	lastIndex := boyermooreLastIndex(dna,pola)
+	found := false
 
 	// ALGORITMA
-	return false;
+	if (i < panjangDNA){ // Pencarian hanya dilakukan apabila i lebih kecil daripada panjang pola, karena jika pola lebih panjang daripada dna tidak dapat dicari
+		for (i < panjangDNA && !found){
+			if (runeDNA[i] == runePola[j]){ // Apabila hurufnya sama, maka periksa huruf sebelumnya. Teknik looking glass
+				i -= 1
+				j -= 1
+			} else { // Kasus hurufnya tidak sama, maka kita menggeser i dan j agar align
+				if (lastIndex[string(runeDNA[i])] != -1){
+					if (lastIndex[string(runeDNA[i])] + 1 < j){ // CASE 1 : Huruf yang salah ada pada lastIndex, dan bisa digeser sampe di-align
+						i += panjangPola - lastIndex[string(runeDNA[i])] - 1
+					}else { // CASE 2 : Huruf yang salah ada pada lastIndex, namun tidak bisa digeser untuk di-align
+						i += panjangPola - j
+					}
+				} else { // CASE 3 : Huruf yang salah pada dna tidak ditemukan pada lastIndex, geser sejauh panjangPola
+					i += panjangPola
+				}
+
+				j = panjangPola - 1 // untuk me-reset j kembali ke huruf terakhir pada pola
+			}
+
+			if (j == -1){ // apabila semua huruf pola sudah diperiksa hingga j nya -1, maka sudah ditemukan
+				found = true
+			}
+		}
+	}
+
+	return found;
 }
 
-//func main() {
+// func main() {
 	// TES SINTAKS DASAR
 	// kalimat := "IPnya kiky adalah "
 	// IPK := 4
@@ -106,10 +143,16 @@ func booyermore(dna string, pola string) bool{
 	// }
 
 	// TES KMP 
-	// fmt.Print(kmp("abcabsda","bsda"))
+	// fmt.Print(kmp("abcabsda","ashaoioahsoithhtash"))
+	// fmt.Print(kmp("agctcgatcgatcgatc", "gatc"))
 
-	// TEST BOOYERMOORE LAST INDEX FUNCTION
-	// last := booyermoreLastIndex("abcd","abacab")
+	// TEST BOYERMOORE LAST INDEX FUNCTION
+	// last := boyermooreLastIndex("abcd","abacab")
 	// fmt.Print(last)
 
-//}
+	// TES boyermoore
+	// fmt.Print(boyermoore("abcabsda","ashaoioahsoithhtash"))
+	// fmt.Print(boyermoore("agctcgatcgatcgatc", "gatc"))
+	// fmt.Print(boyermoore("abcdefgh", "fgh"))
+
+// }
