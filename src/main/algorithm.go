@@ -209,7 +209,6 @@ func lcsSimilarityREVISIFAQ(dna string, pola string) int{
 			tempPersentase = GestaltPatternSimilarity(panjangLCS, dna[i:i+panjangPola], pola)
 			if tempPersentase > persentase {
 				persentase = tempPersentase
-				fmt.Println(dna[i:i+panjangPola])
 			}
 		}
 	}
