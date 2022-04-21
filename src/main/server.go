@@ -1,10 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
@@ -12,14 +13,24 @@ import (
 
 type (
 	predictJSON struct {
-		name    string `json:"name"`
-		dna     string `json:"dna"`
-		disease string `json:"disease"`
+		Name        string `json:"name"`
+		Dna         string `json:"dna"`
+		Diseasename string `json:"diseasename"`
 	}
 
-	addJSON struct {
-		name string `json:"name"`
-		dna  string `json:"dna"`
+	diseaseJSON struct {
+		Names []string `json:"names"`
+	}
+
+	recordJSON struct {
+		Date    string `json:"date"`
+		Name    string `json:"name"`
+		Disease string `json:"disease"`
+		Result  bool   `json:"result"`
+	}
+
+	historyJSON struct {
+		Records []recordJSON `json:"records"`
 	}
 )
 
@@ -30,18 +41,116 @@ const PASS = "pass"
 const DBNAME = "dnamatching"
 
 func predict(c echo.Context) error {
-	//semua logic predict ada disini, panggil API untuk predict di sini
-	return c.String(http.StatusOK, "API predict")
+	//API untuk predict di sini
+	b := new(predictJSON)
+	if err := c.Bind(b); err != nil {
+		return c.String(http.StatusBadRequest, "failed")
+	}
+
+	db, err := sql.Open("mysql", fmt.Sprintf("%s@tcp(%s:%s)/%s", USER, HOST, PORT, DBNAME))
+
+	if err != nil {
+		fmt.Print(err)
+		return c.String(http.StatusInternalServerError, "connection to database failed")
+	}
+
+	defer db.Close()
+
+	results, err := db.Query(fmt.Sprintf("SELECT dna FROM disease WHERE name=%s LIMIT 1", b.Diseasename))
+	if err != nil {
+		panic(err.Error()) // proper error handling instead of panic in your app
+	}
+	var diseasedna string
+	err = results.Scan(&diseasedna)
+	if err != nil {
+		panic(err.Error()) // proper error handling instead of panic in your app
+	}
+
+	result := kmp(b.Dna, diseasedna)
+	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result) VALUES (%s,%s,%s,%v)", time.Now().Format("01-02-2006"), b.Name, b.Diseasename, result))
+	if err != nil {
+		panic(err.Error()) // proper error handling instead of panic in your app
+	}
+	defer insert.Close()
+
+	return c.String(http.StatusOK, "ok")
 }
 
 func history(c echo.Context) error {
 	//ini akan jadi halaman history
-	return c.String(http.StatusOK, "halaman history")
+	db, err := sql.Open("mysql", fmt.Sprintf("%s@tcp(%s:%s)/%s", USER, HOST, PORT, DBNAME))
+
+	if err != nil {
+		fmt.Print(err)
+		return c.String(http.StatusInternalServerError, "connection to database failed")
+	}
+
+	defer db.Close()
+
+	results, err := db.Query("SELECT date,name,disease,result FROM history")
+
+	if err != nil {
+		fmt.Print(err)
+		return c.String(http.StatusInternalServerError, "failed to query")
+	}
+
+	var record recordJSON
+	var records []recordJSON
+	for results.Next() {
+
+		// for each row, scan the result into our tag composite object
+		err = results.Scan(&record.Date, &record.Name, &record.Disease, &record.Result)
+		if err != nil {
+			panic(err.Error()) // proper error handling instead of panic in your app
+		}
+
+		// and then print out the tag's Name attribute
+		records = append(records, record)
+		fmt.Println(record)
+	}
+
+	history := &historyJSON{
+		Records: records}
+	return c.JSON(http.StatusOK, history)
 }
 
 func getDisease(c echo.Context) error {
 	//ini akan jadi API untuk melihat disease yang ada
-	return c.String(http.StatusOK, "halaman add")
+
+	db, err := sql.Open("mysql", fmt.Sprintf("%s@tcp(%s:%s)/%s", USER, HOST, PORT, DBNAME))
+
+	if err != nil {
+		fmt.Print(err)
+		return c.String(http.StatusInternalServerError, "connection to database failed")
+	}
+
+	defer db.Close()
+
+	results, err := db.Query("SELECT name FROM disease")
+
+	if err != nil {
+		fmt.Print(err)
+		return c.String(http.StatusInternalServerError, "failed to query")
+	}
+
+	var name string
+	var names []string
+	for results.Next() {
+
+		// for each row, scan the result into our tag composite object
+		err = results.Scan(&name)
+		if err != nil {
+			panic(err.Error()) // proper error handling instead of panic in your app
+		}
+
+		// and then print out the tag's Name attribute
+		names = append(names, name)
+		fmt.Println(name)
+	}
+
+	disease := &diseaseJSON{
+		Names: names}
+	return c.JSON(http.StatusOK, disease)
 }
 
 func addDisease(c echo.Context) error {
@@ -51,9 +160,9 @@ func addDisease(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, "failed")
 	}
-	s := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME)
+
 	db, err := sql.Open("mysql", fmt.Sprintf("%s@tcp(%s:%s)/%s", USER, HOST, PORT, DBNAME))
-	fmt.Print(s)
+
 	if err != nil {
 		fmt.Print(err)
 		return c.String(http.StatusInternalServerError, "connection to database failed")
@@ -61,7 +170,6 @@ func addDisease(c echo.Context) error {
 
 	defer db.Close()
 
-	
 	insert, err := db.Query(fmt.Sprintf("INSERT INTO disease (name,dna) VALUES ( \"%s\", \"%s\" )", jsonBody["name"], jsonBody["dna"]))
 
 	if err != nil {
