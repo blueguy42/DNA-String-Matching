@@ -189,24 +189,21 @@ func lcsSimilarityPercentage(dna string, pola string) int{
 	return persentase
 }
 
-func lcsSimilarityREVISIFAQ(dna string, pola string) int{
-	// Menggabungkan langsung lcs dengan gestalt agar mendapatkan persentase.
+func lcsHighestSimilarity(dna string, pola string) int{
 	// Mencari untuk substring yang memiliki tingkat kemiripan terbesar.
 	
 	// KAMUS
-	panjangLCS := 0
-	persentase := 0
-	tempPersentase := 0
 	runePola := []rune(pola) // Konversi string menjadi array of char agar bisa mengakses tiap char
 	runeDNA := []rune(dna)
 	panjangPola := len(runePola)
 	panjangDNA := len(runeDNA)
+	persentase := 0
+	tempPersentase := 0
 
 	// ALGORITMA
 	if panjangDNA >= panjangPola { // Melakukan lcs untuk tiap substring
 		for i:=0; i <= panjangDNA - panjangPola; i++ {
-			panjangLCS = lcs(dna[i:i+panjangPola], pola)
-			tempPersentase = GestaltPatternSimilarity(panjangLCS, dna[i:i+panjangPola], pola)
+			tempPersentase = lcsSimilarityPercentage(dna[i:i+panjangPola], pola)
 			if tempPersentase > persentase {
 				persentase = tempPersentase
 			}
@@ -251,7 +248,7 @@ func lcsSimilarityREVISIFAQ(dna string, pola string) int{
 	// fmt.Println(lcsSimilarityPercentage("persis","persis"))
 
 	// TES PERSENTASE KEMIRIPAN LCS YANG SESUAI FAQ
-	// fmt.Println(lcsSimilarityREVISIFAQ("Pennsylvania","Pencilvaneya"))
-	// fmt.Println(lcsSimilarityREVISIFAQ("AGACAGAC","AGCAG")) // ini mirip AGACA sama AGCAG karena LCS nya yakni AGCA jadi 80% 
-	// fmt.Println(lcsSimilarityREVISIFAQ("persis","persis"))
+// 	fmt.Println(lcsHighestSimilarity("Pennsylvania","Pencilvaneya"))
+// 	fmt.Println(lcsHighestSimilarity("AGACAGAC","AGCAG")) // ini mirip AGACA sama AGCAG karena LCS nya yakni AGCA jadi 80% 
+// 	fmt.Println(lcsHighestSimilarity("persis","persis"))
 // }
