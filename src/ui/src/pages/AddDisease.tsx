@@ -1,5 +1,12 @@
 import { useState } from "react";
 
+const axios = require('axios');
+
+export async function addDisease(nameDisease : string, sequenceDisease : string) {
+    const response = await axios.post('/add', {name: nameDisease, dna: sequenceDisease});
+    return response.data;
+}
+
 const AddDisease = () => {
     document.title = "Add Disease | BONEK DNA Tester";
 
@@ -33,6 +40,7 @@ const AddDisease = () => {
                 e.stopPropagation();
                 e.preventDefault();
                 setCounter(counter+1);
+                addDisease((document.getElementById("disease") as HTMLInputElement).value, "CACAT");
                 changeSuccess((document.getElementById("disease") as HTMLInputElement).value, (document.getElementById("dnasequence") as HTMLInputElement).value);
                 (document.getElementById("disease") as HTMLInputElement).value = "";
                 (document.getElementById("dnasequence") as HTMLInputElement).value = "";

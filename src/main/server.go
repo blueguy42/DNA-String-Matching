@@ -47,7 +47,7 @@ func predict(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "failed")
 	}
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s@tcp(%s:%s)/%s", USER, HOST, PORT, DBNAME))
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME))
 
 	if err != nil {
 		fmt.Print(err)
@@ -78,7 +78,7 @@ func predict(c echo.Context) error {
 
 func history(c echo.Context) error {
 	//ini akan jadi halaman history
-	db, err := sql.Open("mysql", fmt.Sprintf("%s@tcp(%s:%s)/%s", USER, HOST, PORT, DBNAME))
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME))
 
 	if err != nil {
 		fmt.Print(err)
@@ -117,7 +117,7 @@ func history(c echo.Context) error {
 func getDisease(c echo.Context) error {
 	//ini akan jadi API untuk melihat disease yang ada
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s@tcp(%s:%s)/%s", USER, HOST, PORT, DBNAME))
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME))
 
 	if err != nil {
 		fmt.Print(err)
@@ -161,7 +161,7 @@ func addDisease(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "failed")
 	}
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s@tcp(%s:%s)/%s", USER, HOST, PORT, DBNAME))
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME))
 
 	if err != nil {
 		fmt.Print(err)
