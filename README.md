@@ -44,10 +44,10 @@ Algoritma ini memanfaatkan kecocokan prefix dan suffix dari sebuah string. Apabi
 
 ## Features
 - Aplikasi dapat menerima input penyakit baru berupa nama penyakit dan sequence DNA-nya (dan dimasukkan ke dalam database). 
-- Aplikasi dapat memprediksi seseorang menderita penyakit tertentu berdasarkan sequence DNA-nya. 
-- Aplikasi memiliki halaman yang menampilkan urutan hasil prediksi dengan kolom pencarian di dalamnya. Kolom pencarian bekerja sebagai filter dalam menampilkan hasil. 
-- Aplikasi dapat menghitung tingkat kemiripan DNA pengguna dengan DNA penyakit pada tes DNA.
-- Aplikasi sudah di-deploy untuk mempermudah akses.
+- Aplikasi dapat memprediksi seseorang menderita penyakit tertentu berdasarkan sequence DNA-nya menggunakan algoritma KMP dan BM.
+- Aplikasi memiliki halaman yang menampilkan urutan hasil prediksi dengan kolom pencarian di dalamnya, di mana kolom pencarian dapat bekerja sebagai filter. Filter dapat bekerja dengan 3 kasus, yaitu nama penyakit saja, tanggal saja, atau keduanya.
+- Aplikasi dapat memvalidasi input DNA menggunakan Regex.
+- Aplikasi dapat menghitung tingkat kemiripan DNA pengguna dengan DNA penyakit pada tes DNA menggunakan algoritma LCS.
 
 
 ## Screenshots
