@@ -40,11 +40,10 @@ const DNATest = () => {
                 if (/^[AGCT]*$/.test(dnaSeq)) {
                     if (algo === "1") {
                         const hasil = await addTest(patientName, dnaSeq, disease, "kmp");
-                        console.log(hasil);
-                        alert("Result using KMP Algorithm:\n" + hasil.date + " - " + hasil.name + " - " + hasil.disease + " - " + hasil.similarity + "% - " + hasil.result);
+                        alert("Result using Knuth-Morris-Pratt Algorithm:\n" + hasil.date + " - " + hasil.name + " - " + hasil.disease + " - " + hasil.similarity + "% - " + (hasil.result ? "True" : "False"));
                     } else {
                         const hasil = await addTest(patientName, dnaSeq, disease, "booyer-moore");
-                        alert("Result using Boyer-Moore Algorithm:\n" + hasil.date + " - " + hasil.name + " - " + hasil.disease + " - " + hasil.similarity + "% - " + hasil.result);
+                        alert("Result using Boyer-Moore Algorithm:\n" + hasil.date + " - " + hasil.name + " - " + hasil.disease + " - " + hasil.similarity + "% - " + (hasil.result ? "True" : "False"));
                     }
                 } else {
                     alert("Error! Make sure DNA sequence only contains characters AGCT!");

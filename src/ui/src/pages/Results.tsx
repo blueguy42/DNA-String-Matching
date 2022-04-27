@@ -6,10 +6,6 @@ type Props = {
     className?: string;
     children: React.ReactNode; 
   };
-  
-const QueryResultInit: FC<Props> = ({children}) => {
-return (<></>);
-};
 
 const QueryResult: FC<Props> = ({children}) => {
     return (
@@ -23,8 +19,7 @@ const QueryResult: FC<Props> = ({children}) => {
 
 async function getResults(dateinput : string, diseaseinput : string) {
     try {
-        console.log("date: " + dateinput + ", disease: " + diseaseinput);
-        const response = await axios.get('/history', {date : dateinput, diseasename : diseaseinput});
+        const response = await axios.post('/history', {date : dateinput, diseasename : diseaseinput});
         return response.data;
     } catch (error) {
         return [];
@@ -33,59 +28,36 @@ async function getResults(dateinput : string, diseaseinput : string) {
 
 const Results = () => {
     document.title = "Results | BONEK DNA Tester";
-
-    const [counter, setCounter] = useState(0);
-    const [success, setSuccess] = useState(false);
-
-    const [query, setquery] = useState('');
     
-
-    const [resultBubble, setresultBubble] = useState([<QueryResultInit>null</QueryResultInit>]);
+    const [queryArray, setqueryArray] = useState([]);
 
     async function searchQuery(query : string) {
         // format date
         if (/^\d{4}\-\d{2}\-\d{2}$/.test(query)) {
-            console.log("format date");
-            
-            const hasilQuery = await getResults(query, "");
-            console.log(hasilQuery);
+            var hasilQuery = await getResults(query, "");
 
         // format date disease_name
         } else if (/^\d{4}\-\d{2}\-\d{2}\s/.test(query)) {
-            console.log("format date disease_name");
             const date = query.slice(0, 10);
             const name = query.slice(11);
 
-            const hasilQuery = await getResults(date, name);
-            console.log(hasilQuery);
+            var hasilQuery = await getResults(date, name);
 
         // format disease_name
         } else {
-
-            console.log("format disease_name");
-
-            const hasilQuery = await getResults("", query);
-            console.log(hasilQuery);
+            var hasilQuery = await getResults("", query);
         }
-    }
-
-    // PLACEHOLDER BOOLEAN FUNCTION TO CHECK IF INPUT IS VALID
-    function changeSuccess(nameinput : string) {
-        if (nameinput !== "") {
-            setSuccess(true);
+        if (hasilQuery.records) {
+            if (hasilQuery.records.length) {
+                alert ("Found " + hasilQuery.records.length + " result(s)!");
+            } else {
+                alert ("No results found!");
+            }
         } else {
-            setSuccess(false);
+            alert ("No results found!");
         }
-    }
-
-    function PlaceHolderText(counter: number, success: boolean) {
-        if (counter === 0) {
-            return <br/>;
-        } else if (success === true) {
-            return "Search successful with " + counter + " results returned!";
-        } else {
-            return "Placeholder for warnings: " + counter;
-        }
+        
+        setqueryArray(hasilQuery.records);
     }
 
     return (
@@ -95,11 +67,7 @@ const Results = () => {
             <form onSubmit={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                setCounter(counter+1);
-                changeSuccess((document.getElementById("searchquery") as HTMLInputElement).value);
                 searchQuery((document.getElementById("searchquery") as HTMLInputElement).value);
-                setresultBubble([...resultBubble, <QueryResult>{counter+1 + ". " + (document.getElementById("searchquery") as HTMLInputElement).value}</QueryResult>]);
-
                 (document.getElementById("searchquery") as HTMLInputElement).value = "";
                 }} >
             <div className="flex flex-col lg:grid grid-cols-1 items-center my-12">
@@ -109,7 +77,10 @@ const Results = () => {
                     <button type="submit" className="bg-gradient-to-br w-min from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-14 py-2.5 text-center">Search</button>
                 
                 </div>
-                { resultBubble }
+                {/* { resultBubble } */}
+                {queryArray ? (queryArray.map((item,index)=>{
+                    return <QueryResult key={index}>{index+1}. {item['date']} - {item['name']} - {item['disease']} - {item['similarity']}% - {item['result'] ? "True" : "False"}</QueryResult>
+                })): <></>}
             </div>
             </form>
         </div>

@@ -44,7 +44,7 @@ type (
 const HOST = "127.0.0.1"
 const PORT = "3306"
 const USER = "root"
-const PASS = "pass"
+const PASS = "210202"
 const DBNAME = "dnamatching"
 
 func predict(c echo.Context) error {
@@ -121,17 +121,12 @@ func history(c echo.Context) error {
 
 	defer db.Close()
 	var results *sql.Rows
-	fmt.Println("Disease name: " + b.Diseasename)
-	fmt.Println("Disease date: " + b.Date)
 	if b.Date == "" {
-		fmt.Println("masuk sini 1")
-		results, err = db.Query(fmt.Sprintf("SELECT date,name,disease,result FROM history WHERE name='%s'", b.Diseasename))
+		results, err = db.Query(fmt.Sprintf("SELECT date,name,disease,result,similarity FROM history WHERE disease='%s'", b.Diseasename))
 	} else if b.Diseasename == "" {
-		fmt.Println("aaaa 2")
-		results, err = db.Query(fmt.Sprintf("SELECT date,name,disease,result FROM history WHERE date='%s'", b.Date))
+		results, err = db.Query(fmt.Sprintf("SELECT date,name,disease,result,similarity FROM history WHERE date='%s'", b.Date))
 	} else {
-		fmt.Println("masya allah 3")
-		results, err = db.Query(fmt.Sprintf("SELECT date,name,disease,result FROM history WHERE date='%s' AND name='%s'", b.Date, b.Diseasename))
+		results, err = db.Query(fmt.Sprintf("SELECT date,name,disease,result,similarity FROM history WHERE date='%s' AND disease='%s'", b.Date, b.Diseasename))
 	}
 
 	if err != nil {
@@ -144,14 +139,13 @@ func history(c echo.Context) error {
 	for results.Next() {
 
 		// for each row, scan the result into our tag composite object
-		err = results.Scan(&record.Date, &record.Name, &record.Disease, &record.Result)
+		err = results.Scan(&record.Date, &record.Name, &record.Disease, &record.Result, &record.Similarity)
 		if err != nil {
 			panic(err.Error()) // proper error handling instead of panic in your app
 		}
 
 		// and then print out the tag's Name attribute
 		records = append(records, record)
-		fmt.Println(record)
 	}
 
 	history := &historyJSON{
@@ -190,7 +184,6 @@ func getDisease(c echo.Context) error {
 
 		// and then print out the tag's Name attribute
 		names = append(names, name)
-		fmt.Println(name)
 	}
 
 	disease := &diseaseJSON{
@@ -227,11 +220,10 @@ func addDisease(c echo.Context) error {
 }
 
 func main() {
-	fmt.Println("Hello, World !")
 	e := echo.New()
 
 	e.POST("/predict", predict)
-	e.GET("/history", history)
+	e.POST("/history", history)
 	e.GET("/get", getDisease)
 	e.POST("/add", addDisease)
 	e.Start(":8000")
