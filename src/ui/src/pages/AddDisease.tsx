@@ -7,28 +7,62 @@ export async function addDisease(nameDisease : string, sequenceDisease : string)
     return response.data;
 }
 
+export async function getDiseases() {
+    try {
+        const response = await axios.get('/get');
+        return Array.from(response.data.names);
+    } catch (error) {
+        return [];
+    }
+}
+
 const AddDisease = () => {
     document.title = "Add Disease | BONEK DNA Tester";
-
+    
     const [counter, setCounter] = useState(0);
-    const [success, setSuccess] = useState(false);
+    const [dnaseq, setDnaseq] = useState('');
+    const [success, setSuccess] = useState(1);
 
-    // PLACEHOLDER BOOLEAN FUNCTION TO CHECK IF INPUT IS VALID
-    function changeSuccess(nameinput : string, fileinput : string) {
-        if (nameinput !== "" && fileinput !== "") {
-            setSuccess(true);
+    const setDNAString = (e : React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = async ()=>{
+                const file = reader.result;
+                setDnaseq(file ? file.toString() : '');
+            }
+            reader.readAsText(e.target.files[0]);     
+        }
+      };
+
+      async function addDiseaseInput(diseaseName : string, dnaSeq : string) {
+        const diseases = await getDiseases();
+        if (diseaseName !== "" && dnaSeq !== "") {
+            if (diseases.includes(diseaseName) == false) {
+                if (/^[AGCT]*$/.test(dnaSeq)) {
+                    addDisease(diseaseName, dnaSeq);
+                    setSuccess(0);
+                } else {
+                    setSuccess(1)
+                }
+            } else {
+                setSuccess(2);
+            }
         } else {
-            setSuccess(false);
+            setSuccess(3);
         }
     }
 
-    function PlaceHolderText(counter: number, success: boolean) {
+    function PlaceHolderText(counter: number, success: number) {
         if (counter === 0) {
             return <br/>;
-        } else if (success === true) {
+        } else if (success === 0) {
             return "Disease successfully added to database!";
-        } else {
-            return "Placeholder for warnings: " + counter;
+        } else if (success === 1) {
+            return "Error! Make sure DNA sequence only contains characters AGCT!";
+        } else if (success === 2) {
+            return "Error! Disease name already exists!";
+        } else if (success === 3 ){
+            return "Error! Make sure to fill in both the disease name and DNA sequence!";
         }
     }
 
@@ -40,8 +74,7 @@ const AddDisease = () => {
                 e.stopPropagation();
                 e.preventDefault();
                 setCounter(counter+1);
-                addDisease((document.getElementById("disease") as HTMLInputElement).value, "CACAT");
-                changeSuccess((document.getElementById("disease") as HTMLInputElement).value, (document.getElementById("dnasequence") as HTMLInputElement).value);
+                addDiseaseInput((document.getElementById("disease") as HTMLInputElement).value, dnaseq);
                 (document.getElementById("disease") as HTMLInputElement).value = "";
                 (document.getElementById("dnasequence") as HTMLInputElement).value = "";
                 }} >
@@ -60,13 +93,13 @@ const AddDisease = () => {
                 <div className="row-start-2">
                     <h3>DNA Sequence:</h3>
                         <div className="mb-6 my-6 mx-64">
-                        <input id="dnasequence" type="file" className="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 p-2.5 cursor-pointer dark:text-gray-400 focus:outline-none focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required/>
+                        <input id="dnasequence" type="file" className="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 p-2.5 cursor-pointer dark:text-gray-400 focus:outline-none focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required onChange={setDNAString}/>
                         </div>
                 </div>
             </div>
             <div className="flex flex-col lg:grid grid-cols-1 items-center">
                 <div className="mb-20">
-                    <p className="my-2">{ PlaceHolderText(counter, success) }</p>
+                    <p className="my-2">{PlaceHolderText(counter, success)}</p>
                     <button type="submit" className="bg-gradient-to-br w-min from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-28 py-2.5 text-center">Submit</button>
                 </div>
             </div>
