@@ -41,7 +41,8 @@ const Results = () => {
 
     const [resultBubble, setresultBubble] = useState([<QueryResultInit>null</QueryResultInit>]);
 
-    async function addDiseaseInput(diseaseName : string, dnaSeq : string) {
+    async function searchQuery(query : string) {
+    }
 
     // PLACEHOLDER BOOLEAN FUNCTION TO CHECK IF INPUT IS VALID
     function changeSuccess(nameinput : string) {

@@ -89,7 +89,7 @@ func predict(c echo.Context) error {
 		result = true
 	}
 
-	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result,similarity) VALUES (\"%s\",\"%s\",\"%s\",%v,%d)", time.Now().Format("01-02-2006"), b.Name, b.Diseasename, result, similarity))
+	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result,similarity) VALUES (\"%s\",\"%s\",\"%s\",%v,%d)", time.Now().Format("2006-01-02"), b.Name, b.Diseasename, result, similarity))
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
