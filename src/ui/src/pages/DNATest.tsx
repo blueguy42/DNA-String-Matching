@@ -3,18 +3,10 @@ import { useState } from "react";
 const axios = require('axios');
 
 export async function getDiseases() {
-    console.log("TEST");
     try {
-        console.log("1---");
         const response = await axios.get('/get');
-        console.log("2---");
-        console.log('response: ', response);
-        console.log("3---");
-        return response.data;
+        return Array.from(response.data.names);
     } catch (error) {
-        console.log("4---");
-        console.log('error: ', error);
-        console.log("5---");
         return [];
     }
 }

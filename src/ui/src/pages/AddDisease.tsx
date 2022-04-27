@@ -37,7 +37,7 @@ const AddDisease = () => {
       async function addDiseaseInput(diseaseName : string, dnaSeq : string) {
         const diseases = await getDiseases();
         if (diseaseName !== "" && dnaSeq !== "") {
-            if (diseases.includes(diseaseName) == false) {
+            if (diseases.includes(diseaseName) === false) {
                 if (/^[AGCT]*$/.test(dnaSeq)) {
                     addDisease(diseaseName, dnaSeq);
                     setSuccess(0);
