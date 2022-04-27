@@ -61,6 +61,7 @@ CREATE TABLE `history` (
   `name` varchar(50) DEFAULT NULL,
   `disease` varchar(50) DEFAULT NULL,
   `result` tinyint(1) DEFAULT NULL,
+  `similarity` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `disease` (`disease`),
   CONSTRAINT `history_ibfk_1` FOREIGN KEY (`disease`) REFERENCES `disease` (`name`)
@@ -73,7 +74,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES (1,'2022-03-01','saul','flu',0),(2,'2022-01-30','afan','cacarair',0);
+INSERT INTO `history` VALUES (1,'2022-03-01','saul','flu',0,0),(2,'2022-01-30','afan','cacarair',0,0);
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -86,4 +87,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-21 19:52:04
+-- Dump completed on 2022-04-27 21:44:46

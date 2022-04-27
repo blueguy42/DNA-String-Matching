@@ -16,6 +16,7 @@ type (
 		Name        string `json:"name"`
 		Dna         string `json:"dna"`
 		Diseasename string `json:"diseasename"`
+		Mode        string `json:"mode"`
 	}
 
 	diseaseJSON struct {
@@ -23,10 +24,11 @@ type (
 	}
 
 	recordJSON struct {
-		Date    string `json:"date"`
-		Name    string `json:"name"`
-		Disease string `json:"disease"`
-		Result  bool   `json:"result"`
+		Date       string `json:"date"`
+		Name       string `json:"name"`
+		Disease    string `json:"disease"`
+		Result     bool   `json:"result"`
+		Similarity int    `json:"similarity"`
 	}
 
 	historyJSON struct {
@@ -61,13 +63,22 @@ func predict(c echo.Context) error {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
 	var diseasedna string
-	err = results.Scan(&diseasedna)
-	if err != nil {
-		panic(err.Error()) // proper error handling instead of panic in your app
+	for results.Next() {
+		err = results.Scan(&diseasedna)
+		if err != nil {
+			panic(err.Error()) // proper error handling instead of panic in your app
+		}
+	}
+	var result bool
+	if b.Mode == "kmp" {
+		result = kmp(b.Dna, diseasedna)
+	} else {
+		result = boyermoore(b.Dna, diseasedna)
 	}
 
-	result := kmp(b.Dna, diseasedna)
-	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result) VALUES (%s,%s,%s,%v)", time.Now().Format("01-02-2006"), b.Name, b.Diseasename, result))
+	similarity := lcsHighestSimilarity(b.Dna, diseasedna)
+
+	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result,similarity) VALUES (%s,%s,%s,%v,%d)", time.Now().Format("01-02-2006"), b.Name, b.Diseasename, result, similarity))
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
