@@ -2,8 +2,8 @@ import { useState } from "react";
 
 const axios = require('axios');
 
-async function addTest(patientname : string, sequencePatient : string, diseaseName : string) {
-    const response = await axios.post('/predict', {name: patientname, dna: sequencePatient, diseasename : diseaseName});
+async function addTest(patientname : string, sequencePatient : string, diseaseName : string, algoChoice : string) {
+    const response = await axios.post('/predict', {name: patientname, dna: sequencePatient, diseasename : diseaseName, mode : algoChoice});
     return response.data;
 }
 
@@ -33,14 +33,16 @@ const DNATest = () => {
         }
     };
 
-    async function addTestInput(patientName : string, dnaSeq : string, disease : string) {
+    async function addTestInput(patientName : string, dnaSeq : string, disease : string, algo : string) {
         const diseases = await getDiseases();
         if (patientName !== "" && dnaSeq !== "" && disease !== "") {
-            console.log(diseases);
-            console.log(disease);
             if (diseases.includes(disease) === true) {
                 if (/^[AGCT]*$/.test(dnaSeq)) {
-                    addTest(patientName, dnaSeq, disease);
+                    if (algo === "1") {
+                        addTest(patientName, dnaSeq, disease, "kmp");
+                    } else {
+                        addTest(patientName, dnaSeq, disease, "booyer-moore");
+                    }
                     alert("Calculating results!");
                 } else {
                     alert("Error! Make sure DNA sequence only contains characters AGCT!");
@@ -70,10 +72,11 @@ const DNATest = () => {
             <form onSubmit={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                addTestInput((document.getElementById("name") as HTMLInputElement).value, dnaseq, (document.getElementById("disease") as HTMLInputElement).value);
+                addTestInput((document.getElementById("name") as HTMLInputElement).value, dnaseq, (document.getElementById("disease") as HTMLInputElement).value, (document.getElementById("algorithmchoice") as HTMLInputElement).value);
                 (document.getElementById("name") as HTMLInputElement).value = "";
                 (document.getElementById("dnasequence") as HTMLInputElement).value = "";
                 (document.getElementById("disease") as HTMLInputElement).value = "";
+                (document.getElementById("algorithmchoice") as HTMLInputElement).value = "1";
                 }} >
             <div className="flex flex-col my-12">
                 <h1>DNA Test</h1>
@@ -98,6 +101,17 @@ const DNATest = () => {
                     
                         <div className="mb-6 my-6 mx-64">
                             <input id="disease" type="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Disease Prediction..." required/>
+                        </div>
+                    
+                </div>
+                <div className="row-start-4">
+                    <h3>String Matching Algorithm:</h3>
+                    
+                        <div className="mb-6 my-6 mx-64">
+                        <select id="algorithmchoice" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                <option value="1">Knuth-Morris-Pratt</option>
+                                <option value="2">Boyer-Moore</option>
+                            </select>
                         </div>
                     
                 </div>

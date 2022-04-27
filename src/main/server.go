@@ -63,7 +63,7 @@ func predict(c echo.Context) error {
 
 	defer db.Close()
 
-	results, err := db.Query(fmt.Sprintf("SELECT dna FROM disease WHERE name=%s LIMIT 1", b.Diseasename))
+	results, err := db.Query(fmt.Sprintf("SELECT dna FROM disease WHERE name=\"%s\" LIMIT 1", b.Diseasename))
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
@@ -89,7 +89,7 @@ func predict(c echo.Context) error {
 		result = true
 	}
 
-	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result,similarity) VALUES (%s,%s,%s,%v,%d)", time.Now().Format("01-02-2006"), b.Name, b.Diseasename, result, similarity))
+	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result,similarity) VALUES (\"%s\",\"%s\",\"%s\",%v,%d)", time.Now().Format("01-02-2006"), b.Name, b.Diseasename, result, similarity))
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}

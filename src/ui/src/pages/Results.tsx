@@ -1,5 +1,7 @@
 import { FC, useState } from "react";
 
+const axios = require('axios');
+
 type Props = {
     className?: string;
     children: React.ReactNode; 
@@ -19,14 +21,27 @@ const QueryResult: FC<Props> = ({children}) => {
     );
 };
 
+async function getResults() {
+    try {
+        const response = await axios.get('/get');
+        return Array.from(response.data.names);
+    } catch (error) {
+        return [];
+    }
+}
+
 const Results = () => {
     document.title = "Results | BONEK DNA Tester";
 
     const [counter, setCounter] = useState(0);
     const [success, setSuccess] = useState(false);
+
+    const [query, setquery] = useState('');
     
 
-    const [chats, setChats] = useState([<QueryResultInit>null</QueryResultInit>]);
+    const [resultBubble, setresultBubble] = useState([<QueryResultInit>null</QueryResultInit>]);
+
+    async function addDiseaseInput(diseaseName : string, dnaSeq : string) {
 
     // PLACEHOLDER BOOLEAN FUNCTION TO CHECK IF INPUT IS VALID
     function changeSuccess(nameinput : string) {
@@ -56,7 +71,7 @@ const Results = () => {
                 e.preventDefault();
                 setCounter(counter+1);
                 changeSuccess((document.getElementById("searchquery") as HTMLInputElement).value);
-                setChats([...chats, <QueryResult>{counter+1 + ". " + (document.getElementById("searchquery") as HTMLInputElement).value}</QueryResult>]);
+                setresultBubble([...resultBubble, <QueryResult>{counter+1 + ". " + (document.getElementById("searchquery") as HTMLInputElement).value}</QueryResult>]);
 
                 (document.getElementById("searchquery") as HTMLInputElement).value = "";
                 }} >
@@ -68,7 +83,7 @@ const Results = () => {
                 
                 </div>
                 <p className="mt-2 my-8">{ PlaceHolderText(counter, success) }</p>
-                { chats }
+                { resultBubble }
             </div>
             </form>
         </div>

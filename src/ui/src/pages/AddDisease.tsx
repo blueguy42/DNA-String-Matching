@@ -30,7 +30,7 @@ const AddDisease = () => {
             }
             reader.readAsText(e.target.files[0]);     
         }
-      };
+    };
 
     async function addDiseaseInput(diseaseName : string, dnaSeq : string) {
         const diseases = await getDiseases();
