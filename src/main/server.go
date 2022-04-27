@@ -121,12 +121,17 @@ func history(c echo.Context) error {
 
 	defer db.Close()
 	var results *sql.Rows
+	fmt.Println("Disease name: " + b.Diseasename)
+	fmt.Println("Disease date: " + b.Date)
 	if b.Date == "" {
-		results, err = db.Query("SELECT date,name,disease,result FROM history WHERE name='%s'", b.Diseasename)
+		fmt.Println("masuk sini 1")
+		results, err = db.Query(fmt.Sprintf("SELECT date,name,disease,result FROM history WHERE name='%s'", b.Diseasename))
 	} else if b.Diseasename == "" {
-		results, err = db.Query("SELECT date,name,disease,result FROM history WHERE date='%s'", b.Date)
+		fmt.Println("aaaa 2")
+		results, err = db.Query(fmt.Sprintf("SELECT date,name,disease,result FROM history WHERE date='%s'", b.Date))
 	} else {
-		results, err = db.Query("SELECT date,name,disease,result FROM history WHERE date='%s' AND name='%s'", b.Date, b.Diseasename)
+		fmt.Println("masya allah 3")
+		results, err = db.Query(fmt.Sprintf("SELECT date,name,disease,result FROM history WHERE date='%s' AND name='%s'", b.Date, b.Diseasename))
 	}
 
 	if err != nil {

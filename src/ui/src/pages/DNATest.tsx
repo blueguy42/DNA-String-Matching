@@ -39,11 +39,13 @@ const DNATest = () => {
             if (diseases.includes(disease) === true) {
                 if (/^[AGCT]*$/.test(dnaSeq)) {
                     if (algo === "1") {
-                        addTest(patientName, dnaSeq, disease, "kmp");
+                        const hasil = await addTest(patientName, dnaSeq, disease, "kmp");
+                        console.log(hasil);
+                        alert("Result using KMP Algorithm:\n" + hasil.date + " - " + hasil.name + " - " + hasil.disease + " - " + hasil.similarity + "% - " + hasil.result);
                     } else {
-                        addTest(patientName, dnaSeq, disease, "booyer-moore");
+                        const hasil = await addTest(patientName, dnaSeq, disease, "booyer-moore");
+                        alert("Result using Boyer-Moore Algorithm:\n" + hasil.date + " - " + hasil.name + " - " + hasil.disease + " - " + hasil.similarity + "% - " + hasil.result);
                     }
-                    alert("Calculating results!");
                 } else {
                     alert("Error! Make sure DNA sequence only contains characters AGCT!");
                 }
