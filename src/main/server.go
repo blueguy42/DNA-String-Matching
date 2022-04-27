@@ -34,6 +34,11 @@ type (
 	historyJSON struct {
 		Records []recordJSON `json:"records"`
 	}
+
+	historyReqJSON struct {
+		Date        string `json:"date"`
+		Diseasename string `json:"diseasename"`
+	}
 )
 
 const HOST = "127.0.0.1"
@@ -76,7 +81,13 @@ func predict(c echo.Context) error {
 		result = boyermoore(b.Dna, diseasedna)
 	}
 
-	similarity := lcsHighestSimilarity(b.Dna, diseasedna)
+	var similarity int
+
+	similarity = lcsHighestSimilarity(b.Dna, diseasedna)
+
+	if similarity >= 80 {
+		result = true
+	}
 
 	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result,similarity) VALUES (%s,%s,%s,%v,%d)", time.Now().Format("01-02-2006"), b.Name, b.Diseasename, result, similarity))
 	if err != nil {
@@ -84,11 +95,23 @@ func predict(c echo.Context) error {
 	}
 	defer insert.Close()
 
-	return c.String(http.StatusOK, "ok")
+	r := &recordJSON{
+		Date:       time.Now().Format("2006-01-02"),
+		Name:       b.Name,
+		Disease:    b.Diseasename,
+		Result:     result,
+		Similarity: similarity}
+
+	return c.JSON(http.StatusOK, r)
 }
 
 func history(c echo.Context) error {
 	//ini akan jadi halaman history
+	b := new(historyReqJSON)
+	if err := c.Bind(b); err != nil {
+		return c.String(http.StatusBadRequest, "failed")
+	}
+
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME))
 
 	if err != nil {
@@ -97,8 +120,14 @@ func history(c echo.Context) error {
 	}
 
 	defer db.Close()
-
-	results, err := db.Query("SELECT date,name,disease,result FROM history")
+	var results *sql.Rows
+	if b.Date == "" {
+		results, err = db.Query("SELECT date,name,disease,result FROM history WHERE name='%s'", b.Diseasename)
+	} else if b.Diseasename == "" {
+		results, err = db.Query("SELECT date,name,disease,result FROM history WHERE date='%s'", b.Date)
+	} else {
+		results, err = db.Query("SELECT date,name,disease,result FROM history WHERE date='%s' AND name='%s'", b.Date, b.Diseasename)
+	}
 
 	if err != nil {
 		fmt.Print(err)
