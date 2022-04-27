@@ -19,9 +19,7 @@ export async function getDiseases() {
 const AddDisease = () => {
     document.title = "Add Disease | BONEK DNA Tester";
     
-    const [counter, setCounter] = useState(0);
     const [dnaseq, setDnaseq] = useState('');
-    const [success, setSuccess] = useState(1);
 
     const setDNAString = (e : React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -40,29 +38,15 @@ const AddDisease = () => {
             if (diseases.includes(diseaseName) === false) {
                 if (/^[AGCT]*$/.test(dnaSeq)) {
                     addDisease(diseaseName, dnaSeq);
-                    setSuccess(0);
+                    alert("Disease successfully added to database!");
                 } else {
-                    setSuccess(1)
+                    alert("Error! Make sure DNA sequence only contains characters AGCT!");
                 }
             } else {
-                setSuccess(2);
+                alert("Error! Disease name already exists!");
             }
         } else {
-            setSuccess(3);
-        }
-    }
-
-    function PlaceHolderText(counter: number, success: number) {
-        if (counter === 0) {
-            return <br/>;
-        } else if (success === 0) {
-            return "Disease successfully added to database!";
-        } else if (success === 1) {
-            return "Error! Make sure DNA sequence only contains characters AGCT!";
-        } else if (success === 2) {
-            return "Error! Disease name already exists!";
-        } else if (success === 3 ){
-            return "Error! Make sure to fill in both the disease name and DNA sequence!";
+            alert("Error! Make sure to fill in both the disease name and DNA sequence!");
         }
     }
 
@@ -73,7 +57,6 @@ const AddDisease = () => {
             <form onSubmit={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                setCounter(counter+1);
                 addDiseaseInput((document.getElementById("disease") as HTMLInputElement).value, dnaseq);
                 (document.getElementById("disease") as HTMLInputElement).value = "";
                 (document.getElementById("dnasequence") as HTMLInputElement).value = "";
@@ -98,8 +81,7 @@ const AddDisease = () => {
                 </div>
             </div>
             <div className="flex flex-col lg:grid grid-cols-1 items-center">
-                <div className="mb-20">
-                    <p className="my-2">{PlaceHolderText(counter, success)}</p>
+                <div className="mt-8 mb-16">
                     <button type="submit" className="bg-gradient-to-br w-min from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-28 py-2.5 text-center">Submit</button>
                 </div>
             </div>
