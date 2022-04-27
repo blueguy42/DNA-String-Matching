@@ -2,12 +2,12 @@ import { useState } from "react";
 
 const axios = require('axios');
 
-export async function addDisease(nameDisease : string, sequenceDisease : string) {
+async function addDisease(nameDisease : string, sequenceDisease : string) {
     const response = await axios.post('/add', {name: nameDisease, dna: sequenceDisease});
     return response.data;
 }
 
-export async function getDiseases() {
+async function getDiseases() {
     try {
         const response = await axios.get('/get');
         return Array.from(response.data.names);
@@ -32,7 +32,7 @@ const AddDisease = () => {
         }
       };
 
-      async function addDiseaseInput(diseaseName : string, dnaSeq : string) {
+    async function addDiseaseInput(diseaseName : string, dnaSeq : string) {
         const diseases = await getDiseases();
         if (diseaseName !== "" && dnaSeq !== "") {
             if (diseases.includes(diseaseName) === false) {
