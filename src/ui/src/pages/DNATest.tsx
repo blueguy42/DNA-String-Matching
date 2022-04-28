@@ -20,7 +20,6 @@ const DNATest = () => {
     document.title = "DNA Test | BONEK DNA Tester";
 
     const [dnaseq, setDnaseq] = useState('');
-    const [success, setSuccess] = useState(false);
 
     const setDNAString = (e : React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -53,16 +52,6 @@ const DNATest = () => {
             }
         } else {
             alert("Error! Make sure to fill in the disease name, DNA sequence, and disease prediction!");
-        }
-    }
-
-    function PlaceHolderText(counter: number, success: boolean) {
-        if (counter === 0) {
-            return <br/>;
-        } else if (success === true) {
-            return "DNA test completed!";
-        } else {
-            return "Placeholder for warnings: " + counter;
         }
     }
 

@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
+	_ "github.com/lib/pq"
 )
 
 type (
@@ -41,29 +42,23 @@ type (
 	}
 )
 
-const HOST = "127.0.0.1"
-const PORT = "3306"
-const USER = "root"
-const PASS = "210202"
-const DBNAME = "dnamatching"
-
 func predict(c echo.Context) error {
 	//API untuk predict di sini
 	b := new(predictJSON)
 	if err := c.Bind(b); err != nil {
-		return c.String(http.StatusBadRequest, "failed")
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME))
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 
 	if err != nil {
 		fmt.Print(err)
-		return c.String(http.StatusInternalServerError, "connection to database failed")
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	defer db.Close()
 
-	results, err := db.Query(fmt.Sprintf("SELECT dna FROM disease WHERE name=\"%s\" LIMIT 1", b.Diseasename))
+	results, err := db.Query(fmt.Sprintf("SELECT dna FROM disease WHERE name='%s' LIMIT 1", b.Diseasename))
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
@@ -89,7 +84,14 @@ func predict(c echo.Context) error {
 		result = true
 	}
 
-	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result,similarity) VALUES (\"%s\",\"%s\",\"%s\",%v,%d)", time.Now().Format("2006-01-02"), b.Name, b.Diseasename, result, similarity))
+	var resultInt int
+	if result {
+		resultInt = 1
+	} else {
+		resultInt = 0
+	}
+
+	insert, err := db.Query(fmt.Sprintf("INSERT INTO history (date,name,disease,result,similarity) VALUES ('%s','%s','%s',%d,%d)", time.Now().Format("2006-01-02"), b.Name, b.Diseasename, resultInt, similarity))
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
@@ -109,14 +111,14 @@ func history(c echo.Context) error {
 	//ini akan jadi halaman history
 	b := new(historyReqJSON)
 	if err := c.Bind(b); err != nil {
-		return c.String(http.StatusBadRequest, "failed")
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME))
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 
 	if err != nil {
 		fmt.Print(err)
-		return c.String(http.StatusInternalServerError, "connection to database failed")
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	defer db.Close()
@@ -131,7 +133,7 @@ func history(c echo.Context) error {
 
 	if err != nil {
 		fmt.Print(err)
-		return c.String(http.StatusInternalServerError, "failed to query")
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	var record recordJSON
@@ -156,11 +158,11 @@ func history(c echo.Context) error {
 func getDisease(c echo.Context) error {
 	//ini akan jadi API untuk melihat disease yang ada
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME))
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 
 	if err != nil {
 		fmt.Print(err)
-		return c.String(http.StatusInternalServerError, "connection to database failed")
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	defer db.Close()
@@ -169,7 +171,7 @@ func getDisease(c echo.Context) error {
 
 	if err != nil {
 		fmt.Print(err)
-		return c.String(http.StatusInternalServerError, "failed to query")
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	var name string
@@ -196,35 +198,40 @@ func addDisease(c echo.Context) error {
 	jsonBody := make(map[string]interface{})
 	err := json.NewDecoder(c.Request().Body).Decode(&jsonBody)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "failed")
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", USER, PASS, HOST, PORT, DBNAME))
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 
 	if err != nil {
 		fmt.Print(err)
-		return c.String(http.StatusInternalServerError, "connection to database failed")
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	defer db.Close()
 
-	insert, err := db.Query(fmt.Sprintf("INSERT INTO disease (name,dna) VALUES ( \"%s\", \"%s\" )", jsonBody["name"], jsonBody["dna"]))
+	insert, err := db.Query(fmt.Sprintf("INSERT INTO disease (name,dna) VALUES ('%s','%s')", jsonBody["name"], jsonBody["dna"]))
 
 	if err != nil {
 		fmt.Print(err)
-		return c.String(http.StatusInternalServerError, "failed to insert")
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	defer insert.Close()
 	return c.String(http.StatusOK, "ok")
 }
 
+func home(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello, World!")
+}
+
 func main() {
 	e := echo.New()
 
+	e.POST("/", home)
 	e.POST("/predict", predict)
 	e.POST("/history", history)
 	e.GET("/get", getDisease)
 	e.POST("/add", addDisease)
-	e.Start(":8000")
+	e.Start(":" + os.Getenv("PORT"))
 }

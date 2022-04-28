@@ -32,20 +32,21 @@ const Results = () => {
     const [queryArray, setqueryArray] = useState([]);
 
     async function searchQuery(query : string) {
+        var hasilQuery = [];
         // format date
-        if (/^\d{4}\-\d{2}\-\d{2}$/.test(query)) {
-            var hasilQuery = await getResults(query, "");
+        if (/^\d{4}-\d{2}-\d{2}$/.test(query)) {
+            hasilQuery = await getResults(query, "");
 
         // format date disease_name
-        } else if (/^\d{4}\-\d{2}\-\d{2}\s/.test(query)) {
+        } else if (/^\d{4}-\d{2}-\d{2}\s/.test(query)) {
             const date = query.slice(0, 10);
             const name = query.slice(11);
 
-            var hasilQuery = await getResults(date, name);
+            hasilQuery = await getResults(date, name);
 
         // format disease_name
         } else {
-            var hasilQuery = await getResults("", query);
+            hasilQuery = await getResults("", query);
         }
         if (hasilQuery.records) {
             if (hasilQuery.records.length) {
