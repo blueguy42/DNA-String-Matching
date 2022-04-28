@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "BONEK DNA Tester",
+  "name": "A DNA pattern matching website using KMP and BM algorithm in React and Go",
   "icons": [
     {
       "src": "favicon.ico",
