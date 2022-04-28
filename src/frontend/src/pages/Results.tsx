@@ -19,7 +19,7 @@ const QueryResult: FC<Props> = ({children}) => {
 
 async function getResults(dateinput : string, diseaseinput : string) {
     try {
-        const response = await axios.post('/history', {date : dateinput, diseasename : diseaseinput});
+        const response = await axios.post('https://backend-bonek-dna.herokuapp.com/history', {date : dateinput, diseasename : diseaseinput});
         return response.data;
     } catch (error) {
         return [];

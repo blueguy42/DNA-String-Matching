@@ -3,13 +3,13 @@ import { useState } from "react";
 const axios = require('axios');
 
 async function addDisease(nameDisease : string, sequenceDisease : string) {
-    const response = await axios.post('/add', {name: nameDisease, dna: sequenceDisease});
+    const response = await axios.post('https://backend-bonek-dna.herokuapp.com/add', {name: nameDisease, dna: sequenceDisease});
     return response.data;
 }
 
 async function getDiseases() {
     try {
-        const response = await axios.get('/get');
+        const response = await axios.get('https://backend-bonek-dna.herokuapp.com/get');
         return Array.from(response.data.names);
     } catch (error) {
         return [];

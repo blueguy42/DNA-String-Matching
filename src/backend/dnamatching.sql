@@ -6,7 +6,7 @@ CREATE TABLE disease (
 
 CREATE TABLE history (
     id SERIAL,
-    date date DEFAULT NULL,
+    date varchar(10) DEFAULT NULL,
     name varchar(50) DEFAULT NULL,
     disease varchar(50) DEFAULT NULL,
     result SMALLINT DEFAULT NULL,
