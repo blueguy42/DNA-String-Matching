@@ -32,7 +32,7 @@ Algoritma ini memanfaatkan kecocokan prefix dan suffix dari sebuah string. Apabi
 ## Technologies Used
 ### Programming Language
 - Golang
-- MySQL
+- SQL
 - HTML
 - CSS
 - Typescript
@@ -54,14 +54,27 @@ Algoritma ini memanfaatkan kecocokan prefix dan suffix dari sebuah string. Apabi
 ![addDisease.png](./img/addDisease.png)
 
 ## Setup
-What are the project requirements/dependencies? Where are they listed? A requirements.txt or a Pipfile.lock file perhaps? Where is it located?
-
-Proceed to describe how to install / setup one's local environment / get started with the project.
+1. Pastikan sudah menginstall yarn dengan cara install node terlebih dahulu melalui link https://nodejs.org/en/download/ dan menjalankan perintah berikut
+```
+npm install --global yarn
+```
+2. Pastikan juga sudah memiliki browser, diutamakan Google Chrome
 
 
 ## Usage
-How does one go about using it?
-Provide various use cases and code examples here.
+Terdapat dua cara untuk menggunakan program yang telah digunakan. Cara pertama adalah dengan cara menjalankan aplikasi web di lokal dengan cara menjalankan perintah berikut
+```
+//masuk ke folder src/frontend dari folder repository ini
+cd src/frontend
+//pastikan sudah menginstall yarn
+yarn start
+```
+
+Pengguna tidak perlu menjalankan server backend dan menginisiasi basis data di lokal karena frontend yang dijalankan dengan perintah di atas sudah terkoneksi dengan backend dan basis data di cloud yang telah di deploy menggunakan Heroku.
+
+Cara kedua yang lebih mudah adalah dengan langsung mengakses aplikasi web yang sudah di deploy melalui alamat https://bonek-dna.netlify.app/
+
+
 
 `write-your-code-here`
 
