@@ -1,5 +1,5 @@
 # Tubes 3 - BONEK Returns
-> Repository ini merupakan program aplikasi web berupa DNA Sequence Matching yang menerapkan algoritma String Matching KMP, BM, dan Regex untuk menemukan pola DNA suatu penyakit dalam sequence DNA manusia.
+> Repository ini merupakan program aplikasi web berupa DNA Sequence Matching yang menerapkan algoritma String Matching KMP, BM, dan Regex untuk menemukan pola DNA suatu penyakit dalam sequence DNA manusia. Video demonstrasi dapat diakses melalui link <a href="https://bonek-dna.netlify.app/">berikut</a>
 
 Repository program ini dibuat untuk memenuhi **Tugas Besar Mata Kuliah IF2211 Strategi Algoritma** yang ke-3 pada Semester II Tahun Akademik 2021/2022. 
 
@@ -12,8 +12,6 @@ Repository program ini dibuat untuk memenuhi **Tugas Besar Mata Kuliah IF2211 St
 * [Setup](#setup)
 * [Usage](#usage)
 * [Project Status](#project-status)
-* [Room for Improvement](#room-for-improvement)
-* [Acknowledgements](#acknowledgements)
 * [Contact](#contact)
 
 
@@ -51,8 +49,9 @@ Algoritma ini memanfaatkan kecocokan prefix dan suffix dari sebuah string. Apabi
 
 
 ## Screenshots
-
-
+![predict.png](./img/Predict.png)
+![History.png](./img/History.png)
+![addDisease.png](./img/addDisease.png)
 
 ## Setup
 What are the project requirements/dependencies? Where are they listed? A requirements.txt or a Pipfile.lock file perhaps? Where is it located?
@@ -66,25 +65,8 @@ Provide various use cases and code examples here.
 
 `write-your-code-here`
 
-
-## Room for Improvement
-Include areas you believe need improvement / could be improved. Also add TODOs for future development.
-
-Room for improvement:
-- Improvement to be done 1
-- Improvement to be done 2
-
-To do:
-- Feature to be added 1
-- Feature to be added 2
-
-
-## Acknowledgements
-Give credit here.
-- This project was inspired by...
-- This project was based on [this tutorial](https://www.example.com).
-- Many thanks to...
-
+## Project Status
+Project is: **Complete**
 
 ## Contact
 Project ini dibuat oleh kelompok 5 **(BONEK Returns)** yang beranggotakan :
