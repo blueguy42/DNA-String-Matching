@@ -76,8 +76,6 @@ Cara kedua yang lebih mudah adalah dengan langsung mengakses aplikasi web yang s
 
 
 
-`write-your-code-here`
-
 ## Project Status
 Project is: **Complete**
 
