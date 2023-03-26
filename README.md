@@ -1,7 +1,6 @@
-# Tubes 3 - BONEK Returns
-> Repository ini merupakan program aplikasi web berupa DNA Sequence Matching yang menerapkan algoritma String Matching KMP, BM, dan Regex untuk menemukan pola DNA suatu penyakit dalam sequence DNA manusia. Video demonstrasi dapat diakses melalui link <a href="https://bonek-dna.netlify.app/">berikut</a>
+# DNA String Matching
 
-Repository program ini dibuat untuk memenuhi **Tugas Besar Mata Kuliah IF2211 Strategi Algoritma** yang ke-3 pada Semester II Tahun Akademik 2021/2022. 
+This program was created to fulfill **IF2211 Algorithm Strategies: Major Assignment 3** in Semester II 2021/2022. 
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -16,18 +15,17 @@ Repository program ini dibuat untuk memenuhi **Tugas Besar Mata Kuliah IF2211 St
 
 
 ## General Information
-DNA merupakan materi genetik yang menentukan sifat dan karakteristik seseorang. Ketika seseorang memiliki kelainan genetik atau DNA baik karena faktor keturunan ataupun lingkungan, ia dapat mengidap suatu penyakit tertentu. Penyakit genetik tersebut bisa diantisipasi dengan pengujian tes genetik untuk mengetahui struktur genetik di dalam tubuh seseorang dan mendeteksi kelainan genetiknya. Terdapat berbagai jenis tes DNA dalam dunia bio-informatika yang dapat dilakukan, dan salah satunya merupakan DNA *sequence analysis*. DNA *sequence analysis* merupakan suatu cara untuk memprediksi berbagai macam penyakit yang tersimpan dalam database berdasarkan urutan sekuens DNA nya, yang direpresentasikan dengan sekuens 4 simbol [A,G,C,T] yang melambangkan basa nitrogen Adenin, Guanin, Cytosine, dan Timin.
+DNA is the genetic material that determines the traits and characteristics of an individual. When someone has a genetic disorder or abnormality in their DNA, whether inherited or due to environmental factors, they may develop a particular disease. Genetic testing can anticipate such genetic diseases by examining the genetic structure within an individual's body and detecting any abnormalities. There are various types of DNA tests in the field of bioinformatics that can be performed, and one of them is DNA sequence analysis. DNA sequence analysis is a way to predict various diseases stored in a database based on the sequence of DNA, represented by the sequence of four symbols [A, G, C, T] representing the nitrogenous bases Adenine, Guanine, Cytosine, and Thymine.
 
-DNA *sequence analysis* dapat dilakukan dengan teknik *pattern matching* yang dapat menganalisis sekuens DNA dalam waktu yang singkat. Program ini merupakan program DNA sequence matcher untuk melakukan *pattern matching* tersebut dan menentukan apakah suatu DNA manusia mengandung penyakit tertentu. Program akan memvalidasi terlebih dahulu urutan sekuens DNA manusia ataupun penyakit dari input pengguna menggunakan Regular Expression. Kemudian, program akan menerapkan algoritma KMP dan BM untuk melakukan *string matching* dan menentukan apakah DNA penyakit tersebut terkandung dalam DNA manusia. Program juga dapat menentukan *similarity* dari kedua DNA menggunakan algoritma LCS dan Gestalt Pattern Matching.
+DNA sequence analysis can be done using pattern matching techniques that can analyze DNA sequences quickly. This program is a DNA sequence matcher program that performs pattern matching and determines if a human DNA contains a specific disease. The program first validates the sequence of human DNA or disease from user input using Regular Expression. Then, the program applies the KMP and BM algorithms to perform string matching and determine if the disease DNA is contained within the human DNA. The program can also determine the similarity of both DNA using LCS and Gestalt Pattern Matching algorithms.
 
 
 ## Algorithms Used
-- Knuth-Morris-Pratt (KMP) : Algoritma pencocokan string dengan melakukan pencarian pola dalam sebuah string secara urut dari kiri ke kanan seperti algoritma *Brute Force*, namun memiliki pola pencarian yang lebih cerdas sehingga meningkatkan efisiensi dari pencarian dengan mengurangi banyaknya perbandingan huruf yang diperiksa. 
-Algoritma ini memanfaatkan kecocokan prefix dan suffix dari sebuah string. Apabila saat pencarian ditemukan ketidak-cocokan sebuah huruf antara string S pada indeks ke i dengan pola P pada indeks ke j, maka indeks i pada S dapat digeser sebanyak prefix terbesar dari P[0..j-1] yang merupakan suffix dari P[1..j-1] 
+- Knuth-Morris-Pratt (KMP) : A string matching algorithm performs pattern search in a string sequentially from left to right, similar to the Brute Force algorithm, but it has a smarter search pattern that improves the efficiency of the search by reducing the number of letter comparisons examined. This algorithm utilizes the matching of prefixes and suffixes of a string. When searching, if a mismatch is found between a letter in string S at index i and a letter in pattern P at index j, then index i in S can be shifted by the largest prefix of P[0..j-1] that is also a suffix of P[1..j-1].
 
-- Boyer-Moore (BM) : Algoritma pencocokan string yang dilakukan dengan mencocokkan pola dari kanan ke kiri. Pemeriksaan terhadap suatu string S dimulai dari awal, namun terhadap suatu pola P dimulai dari indeks terakhirnya yakni panjang pola – 1. Algoritma ini memanfaatkan dua teknik, yakni *the looking-glass technique* dan *character-jump technique*. *The looking-glass technique* merupakan bagaimana kita memeriksa suatu pola P dalam string S dengan bergerak mundur terhadap P, dimulai dari akhir. Apabila huruf yang diperiksa benar, pemeriksaan lanjut ke kiri hingga semua sudah huruf pada pola sudah diperiksa. Apabila huruf yang diperiksa salah, akan memanfaatkan *character-jump technique*. *Character-jump technique* merupakan pergeseran indeks i pada S apabila ditemukan huruf yang tidak cocok, dan dikembalikan ke indeks terakhir pada P. 
+- Boyer-Moore (BM) : The string matching algorithm is performed by matching the pattern from right to left. The examination of a string S starts from the beginning, but the examination of a pattern P starts from its last index, which is the length of the pattern minus one. This algorithm utilizes two techniques, namely the looking-glass technique and the character-jump technique. The looking-glass technique involves examining a pattern P in a string S by moving backward towards P, starting from the end. If the examined letter is correct, the examination continues to the left until all letters in the pattern have been examined. If the examined letter is incorrect, the character-jump technique is utilized. The character-jump technique involves shifting the index i in S if a mismatched letter is found, and returning it to the last index in P.
 
-- Longest Common Subsequence (LCS) : Longest Common Subsequence adalah permasalahan mencari subsequence (uparangkaian) terpanjang dari dua buah string dan digunakan untuk menentukan *similarity* dari dua buah string tersebut. Subsequence berbeda dengan substring yang harus kontigu, sementara subsequence tidak harus kontigu tetapi tetap urut relatif dari kemunculannya. *Similarity* akan ditentukan menggunakan formula Gestalt Pattern Matching yang memanfaatkan panjang dari LCS itu sendiri.
+- Longest Common Subsequence (LCS) : Longest Common Subsequence is a problem of finding the longest subsequence of two strings and is used to determine the similarity of the two strings. Subsequence differs from substring in that it does not have to be contiguous, while substring must be contiguous, but subsequence must still be relatively ordered by its occurrence. Similarity will be determined using the Gestalt Pattern Matching formula, which utilizes the length of the LCS itself.
 
 ## Technologies Used
 ### Programming Language
@@ -41,11 +39,11 @@ Algoritma ini memanfaatkan kecocokan prefix dan suffix dari sebuah string. Apabi
 - Tailwind
 
 ## Features
-- Aplikasi dapat menerima input penyakit baru berupa nama penyakit dan sequence DNA-nya (dan dimasukkan ke dalam database). 
-- Aplikasi dapat memprediksi seseorang menderita penyakit tertentu berdasarkan sequence DNA-nya menggunakan algoritma KMP dan BM.
-- Aplikasi memiliki halaman yang menampilkan urutan hasil prediksi dengan kolom pencarian di dalamnya, di mana kolom pencarian dapat bekerja sebagai filter. Filter dapat bekerja dengan 3 kasus, yaitu nama penyakit saja, tanggal saja, atau keduanya.
-- Aplikasi dapat memvalidasi input DNA menggunakan Regex.
-- Aplikasi dapat menghitung tingkat kemiripan DNA pengguna dengan DNA penyakit pada tes DNA menggunakan algoritma LCS.
+- The application can receive new disease inputs in the form of disease names and their DNA sequences (which are then added to the database).
+- The application can predict whether someone has a certain disease based on their DNA sequence using the KMP and BM algorithms.
+- The application has a page that displays the order of prediction results with a search column, where the search column can work as a filter. The filter can work with three cases, namely disease names only, dates only, or both.
+- The application can validate DNA input using Regex.
+- The application can calculate the level of similarity between a user's DNA and the disease DNA in DNA testing using the LCS algorithm.
 
 
 ## Screenshots
@@ -54,33 +52,31 @@ Algoritma ini memanfaatkan kecocokan prefix dan suffix dari sebuah string. Apabi
 ![addDisease.png](./img/addDisease.png)
 
 ## Setup
-1. Pastikan sudah menginstall yarn dengan cara install node terlebih dahulu melalui link https://nodejs.org/en/download/ dan menjalankan perintah berikut
+1. Make sure to install yarn by installing node first through the link https://nodejs.org/en/download/ and running the following command:
 ```
 npm install --global yarn
 ```
-2. Pastikan juga sudah memiliki browser, diutamakan Google Chrome
+2. Make sure that you also have a browser, preferably Google Chrome.
 
 
 ## Usage
-Terdapat dua cara untuk menggunakan program yang telah digunakan. Cara pertama adalah dengan cara menjalankan aplikasi web di lokal dengan cara menjalankan perintah berikut
+There are two ways to use the program that has been provided. The first way is by running the web application locally by executing the following command:
 ```
-//masuk ke folder src/frontend dari folder repository ini
+// go to src/frontend folder of this repository
 cd src/frontend
-//pastikan sudah menginstall yarn
+// make sure that yarn has been installed
 yarn start
 ```
 
-Pengguna tidak perlu menjalankan server backend dan menginisiasi basis data di lokal karena frontend yang dijalankan dengan perintah di atas sudah terkoneksi dengan backend dan basis data di cloud yang telah di deploy menggunakan Heroku.
+Users do not need to run the backend server and initialize the database locally because the frontend, which is executed with the above command, is already connected to the backend and database in the cloud that has been deployed using Heroku.
 
-Cara kedua yang lebih mudah adalah dengan langsung mengakses aplikasi web yang sudah di deploy melalui alamat https://bonek-dna.netlify.app/
-
-
+The second and easier way is to directly access the deployed web application through the address https://bonek-dna.netlify.app/
 
 ## Project Status
 Project is: **Complete**
 
 ## Contact
-Project ini dibuat oleh kelompok 5 **(BONEK Returns)** yang beranggotakan :
+This project was created by group 5 **(BONEK Returns)** consisting of:
 >- <a href="https://www.linkedin.com/in/ahmad-alfani-handoyo/"> Ahmad Alfani Handoyo (13520023)</a>
 >- <a href="https://www.linkedin.com/in/saulsayers/?originalSubdomain=id">Saul Sayers (13520094)</a>
 >- <a href="https://www.linkedin.com/in/rizky-ramadhana-putra-kusnaryanto-6037a51aa/">Rizky Ramadhana Putra Kusnaryanto (13520151)</a>
